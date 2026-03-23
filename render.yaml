@@ -1,0 +1,39 @@
+services:
+  # Redis instance used by both the API and the background worker.
+  - type: keyvalue
+    name: redis
+    plan: starter
+    ipAllowList:
+      - source: 0.0.0.0/0
+        description: everywhere
+
+  # Combines API + worker so both can share the same filesystem paths.
+  - type: web
+    runtime: docker
+    name: api
+    plan: starter
+    dockerfilePath: services/api_worker/Dockerfile
+    healthCheckPath: /health
+    disk:
+      name: artifacts
+      mountPath: /artifacts
+      sizeGB: 20
+    envVars:
+      - key: REDIS_URL
+        fromService:
+          name: redis
+          type: keyvalue
+          property: connectionString
+      - key: ARTIFACT_DIR
+        value: /artifacts
+
+  # Streamlit UI. It calls the API over the public Render URL.
+  - type: web
+    runtime: docker
+    name: ui
+    plan: starter
+    dockerfilePath: services/ui/Dockerfile
+    envVars:
+      - key: API_URL
+        value: https://api.onrender.com
+
