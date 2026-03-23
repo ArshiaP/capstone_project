@@ -14,7 +14,7 @@ COPY services/worker/worker.py ./worker.py
 # Seed (pretrained models + metadata). Worker expects these files under $ARTIFACT_DIR.
 RUN mkdir -p /seed_artifacts
 # The repo historically used a typo’d filename for the GaussianCopula model.
-COPY artifacts/gaussian_copuula_diabetes.pkl /seed_artifacts/
+COPY artifacts/gaussian_copula_diabetes.pkl /seed_artifacts/
 COPY artifacts/ctgan_diabetes.pkl /seed_artifacts/
 COPY artifacts/tvae_diabetes.pkl /seed_artifacts/
 COPY artifacts/diabetes_metadata.json /seed_artifacts/
